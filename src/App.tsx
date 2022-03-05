@@ -15,10 +15,7 @@ function App() {
 	};
 
 	useEffect(() => {
-		inputRef?.current?.focus();
-	}, [inputRef]);
-
-	useEffect(() => {
+		inputRef.current.focus();
 		(async () => {
 			return await axios.get('https://random-word-api.herokuapp.com/all');
 		})().then(({ data }) => {
