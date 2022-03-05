@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import filter from 'bad-words';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [userGuess, setUserGuess] = useState<string>('');
+	const Filter = new filter();
+	let wordList: string[] = [];
+	const inputRef = useRef<HTMLInputElement>(null!);
+
+	const handleInputChange = (): void => {
+		setUserGuess(inputRef.current.value);
+	};
+
+	useEffect(() => {
+		inputRef?.current?.focus();
+	}, [inputRef]);
+
+	useEffect(() => {
+		(async () => {
+			return await axios.get('https://random-word-api.herokuapp.com/all');
+		})().then(({ data }) => {
+			wordList = data.filter(
+				(word: string) => word.length === 5 && !Filter.isProfane(word)
+			);
+		});
+	}, []);
+
+	return (
+		<div className="App">
+			<input type="text" ref={inputRef} onChange={handleInputChange} />
+			{userGuess}
+		</div>
+	);
 }
 
 export default App;
