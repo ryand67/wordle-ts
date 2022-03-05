@@ -16,6 +16,11 @@ function App() {
 
 	useEffect(() => {
 		inputRef.current.focus();
+
+		document.addEventListener('click', (): void => {
+			inputRef.current.focus();
+		});
+
 		(async () => {
 			return await axios.get('https://random-word-api.herokuapp.com/all');
 		})().then(({ data }) => {
@@ -34,9 +39,15 @@ function App() {
 
 	return (
 		<GlobalContext.Provider value={contextValues}>
-			<div className="App">
-				<input type="text" ref={inputRef} onChange={handleInputChange} />
-				{userGuess}
+			<div className="w-screen h-screen bg-zinc-900 flex flex-col justify-center items-center">
+				<input
+					className="fixed opacity-0"
+					type="text"
+					maxLength={5}
+					ref={inputRef}
+					onChange={handleInputChange}
+				/>
+				<p className="text-white">{userGuess}</p>
 			</div>
 		</GlobalContext.Provider>
 	);
