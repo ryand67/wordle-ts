@@ -1,9 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import filter from 'bad-words';
+import { GlobalContext } from './utils/GlobalContext';
 
 function App() {
 	const [userGuess, setUserGuess] = useState<string>('');
+	const [tryCount, setTryCount] = useState<number>(0);
 	const Filter = new filter();
 	let wordList: string[] = [];
 	const inputRef = useRef<HTMLInputElement>(null!);
@@ -26,11 +28,20 @@ function App() {
 		});
 	}, []);
 
+	const contextValues = useMemo(() => {
+		return {
+			userGuess,
+			tryCount,
+		};
+	}, [userGuess, tryCount]);
+
 	return (
-		<div className="App">
-			<input type="text" ref={inputRef} onChange={handleInputChange} />
-			{userGuess}
-		</div>
+		<GlobalContext.Provider value={contextValues}>
+			<div className="App">
+				<input type="text" ref={inputRef} onChange={handleInputChange} />
+				{userGuess}
+			</div>
+		</GlobalContext.Provider>
 	);
 }
 
